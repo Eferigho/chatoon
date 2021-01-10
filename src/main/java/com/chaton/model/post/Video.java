@@ -1,5 +1,6 @@
-package com.chaton.model;
+package com.chaton.model.post;
 
+import com.chaton.web.config.ApplicationUser;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,17 +11,16 @@ import javax.persistence.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Like {
+public class Video {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private User author;
+    @ManyToOne
+    private ApplicationUser user;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Post post;
+    @ManyToOne
+    Post post;
 
-    private String like_value;
-
+    private String videoUrl;
 }
