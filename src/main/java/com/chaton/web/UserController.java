@@ -8,11 +8,15 @@ import com.chaton.web.config.ApplicationUser;
 import com.chaton.web.config.LoginDTO;
 import com.chaton.web.config.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,12 +51,20 @@ public class UserController {
 
 
     @PostMapping("/register")
-    public String registerUser(@Validated @RequestBody UserDto userDto) throws Exception, UsernameExist {
+    public String registerUser(@Validated @RequestBody UserDto userDto, HttpServletRequest request) throws Exception, UsernameExist {
        userService.createUser(userDto.getUsername(),userDto.getPassword(),
-               userDto.getEmail(),userDto.getGender(), userDto.getRole());
+               userDto.getEmail(),userDto.getGender(), userDto.getRole(), request);
        return "";
     }
 
+    @GetMapping("/verify")
+    public String verifyUser(@Param("code") String code, HttpServletRequest request) throws UnsupportedEncodingException, MessagingException {
+        if (userService.verify(code, request)) {
+            return "verify_success";
+        } else {
+            return "verify_fail";
+        }
+    }
 
     @PutMapping("/{username}")
     public String updateUser(@Validated @RequestBody UserDto userDto) throws Exception {

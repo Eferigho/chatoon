@@ -13,6 +13,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.annotation.Resource;
 
@@ -37,7 +40,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/auth/login", "/register").permitAll()
+                .antMatchers("/auth/login", "/register", "/verify").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedEntryPoint).and()
@@ -62,4 +65,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new JwtAuthenticationFilter();
     }
 
+    @Bean
+    CorsConfigurationSource corsConfigurationSource(){
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
+        return source;
+    }
+
+    // first token
+    // eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJDaHJpc3RpYW4iLCJyb2xlcyI6IlJPTEVfTk9STUFMX1VTRVIiLCJpYXQiOjE2MTA0NjU0ODIsImV4cCI6MTYxMTMyOTQ4Mn0.ky-PNruVaU2o43KQ_Gwi1O2r5iD5ZmKdQXTbdxBAwxo
+
+    // second token
+
+    // eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJDaHJpc3RpYW4iLCJyb2xlcyI6IlJPTEVfTk9STUFMX1VTRVIiLCJpYXQiOjE2MTA0NjU1MzMsImV4cCI6MTYxMTMyOTUzM30.w7Wq4QaVb-kx7HxOkNcn7a4p8Hr-gr7mkVxSsj479ac
 }
