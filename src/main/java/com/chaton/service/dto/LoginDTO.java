@@ -1,9 +1,9 @@
-package com.chaton.web.config;
+package com.chaton.service.dto;
 
 import lombok.Data;
 
 @Data
 public class LoginDTO {
-    private String username;
+    private String email;
     private String password;
 }

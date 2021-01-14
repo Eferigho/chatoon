@@ -12,21 +12,26 @@ import java.util.Optional;
 
 public interface UserService {
 
-   ResponseEntity<ApplicationUser> createUser(String username, String password,
-                                              String email, Gender gender, String role, HttpServletRequest request) throws UsernameExist, Exception;
+   ResponseEntity<ApplicationUser> createUser(String email, String password,
+                                               Gender gender, String role, HttpServletRequest request) throws UsernameExist, Exception;
 
    boolean verify(String code, HttpServletRequest request)throws UnsupportedEncodingException, MessagingException;
 
-    ResponseEntity<ApplicationUser> updateUser(String username, String password, String firstName, String lastName,
-                                               String email, String phoneNumber, String profileImage,
+    String resetPassword(String email, HttpServletRequest request)throws UnsupportedEncodingException, MessagingException;
+
+   String confirmResetPassword(String resetPasswordToken, String newPassword, String confirmPassword, HttpServletRequest request)throws UnsupportedEncodingException, MessagingException;
+
+    ResponseEntity<ApplicationUser> updateUser(String email, String password, String firstName, String lastName,
+                                               String profileName, String phoneNumber, String profileImage,
                                                String userBillBoard, String role) throws Exception;
 
-    ResponseEntity<?> generateToken(String username, String password);
-    Optional<ApplicationUser> findUserByUsername(String username) throws Exception;
+    ResponseEntity<?> generateToken(String email, String password);
+
+    Optional<ApplicationUser> findUserByUsername(String email) throws Exception;
 
     List<ApplicationUser> findAllUser();
 
-    void deleteByUsername(String username);
+    void deleteByUsername(String email);
 
 
 }

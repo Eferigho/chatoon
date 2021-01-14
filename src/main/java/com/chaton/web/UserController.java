@@ -3,9 +3,10 @@ package com.chaton.web;
 
 import com.chaton.exception.UsernameExist;
 
-import com.chaton.service.dto.UserDto;
+import com.chaton.service.dto.ResetPasswordDTO;
+import com.chaton.service.dto.UserDTO;
 import com.chaton.web.config.ApplicationUser;
-import com.chaton.web.config.LoginDTO;
+import com.chaton.service.dto.LoginDTO;
 import com.chaton.web.config.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -28,11 +29,9 @@ public class UserController {
     @Autowired
     UserService userService;
 
-
-
     @RequestMapping(value = "/auth/login",method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody LoginDTO loginDTO) throws Exception {
-        return userService.generateToken(loginDTO.getUsername(),loginDTO.getPassword());
+        return userService.generateToken(loginDTO.getEmail(),loginDTO.getPassword());
     }
 
     @PreAuthorize("hasAnyRole('BUSINESS_USER, NORMAL_USER')")
@@ -42,18 +41,18 @@ public class UserController {
         return userService.findAllUser();
     }
 
-    @GetMapping("/{username}")
+    @GetMapping("/{email}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_NORMAL_USER')")
-    public Optional<ApplicationUser> findUserByUserName(@PathVariable String username) throws Exception {
-        return  userService.findUserByUsername(username);
+    public Optional<ApplicationUser> findUserByUserName(@PathVariable String email) throws Exception {
+        return  userService.findUserByUsername(email);
 
     }
 
 
     @PostMapping("/register")
-    public String registerUser(@Validated @RequestBody UserDto userDto, HttpServletRequest request) throws Exception, UsernameExist {
-       userService.createUser(userDto.getUsername(),userDto.getPassword(),
-               userDto.getEmail(),userDto.getGender(), userDto.getRole(), request);
+    public String registerUser(@Validated @RequestBody UserDTO userDto, HttpServletRequest request) throws Exception, UsernameExist {
+       userService.createUser(userDto.getEmail(),userDto.getPassword(),
+               userDto.getGender(), userDto.getRole(), request);
        return "";
     }
 
@@ -66,18 +65,30 @@ public class UserController {
         }
     }
 
-    @PutMapping("/{username}")
-    public String updateUser(@Validated @RequestBody UserDto userDto) throws Exception {
-        userService.updateUser(userDto.getUsername(),userDto.getPassword(),
-               userDto.getFirstName(), userDto.getLastName(), userDto.getEmail(),userDto.getPhoneNumber(),
+    @GetMapping("/resetPassword")
+    public String resetPassword(@RequestBody ResetPasswordDTO resetPasswordDTO, HttpServletRequest request) throws UnsupportedEncodingException, MessagingException {
+        return userService.resetPassword(resetPasswordDTO.getEmail(),request);
+    }
+
+    @GetMapping("/confirmPassword")
+    public String confirmResetPassword(@Param("token") String token, @RequestBody ResetPasswordDTO resetPasswordDTO, HttpServletRequest request) throws UnsupportedEncodingException, MessagingException {
+        return userService.confirmResetPassword( token, resetPasswordDTO.getNewPassword(), resetPasswordDTO.getConfirmPassword(),request);
+
+
+    }
+
+    @PutMapping("/{email}")
+    public String updateUser(@Validated @RequestBody UserDTO userDto) throws Exception {
+        userService.updateUser(userDto.getEmail(),userDto.getPassword(),
+               userDto.getFirstName(), userDto.getLastName(), userDto.getProfileName(),userDto.getPhoneNumber(),
                 userDto.getProfileImage(),
                 userDto.getUserBillBoard(),userDto.getRole());
         return "";
     }
 
-    @DeleteMapping("/{username}")
-    ResponseEntity<?> deleteUser(@PathVariable String username){
-        userService.deleteByUsername(username);
+    @DeleteMapping("/{email}")
+    ResponseEntity<?> deleteUser(@PathVariable String email){
+        userService.deleteByUsername(email);
         return ResponseEntity.ok().build();
     }
 

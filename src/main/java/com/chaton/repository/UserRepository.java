@@ -11,11 +11,13 @@ import java.util.Optional;
 @Transactional
 public interface UserRepository extends JpaRepository<ApplicationUser, Long> {
 
-    Optional<ApplicationUser> findByUsername(String username);
+    Optional<ApplicationUser> findByUsername(String email);
 
     Optional<ApplicationUser> findByVerificationCode(String code);
 
-    void deleteByUsername(String username);
+    Optional<ApplicationUser> findByResetPasswordToken(String token);
 
-    boolean existsByUsername(String username);
+    void deleteByUsername(String email);
+
+    boolean existsByUsername(String email);
 }

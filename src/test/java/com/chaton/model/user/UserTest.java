@@ -60,9 +60,9 @@ class UserTest {
         myAddress.setCountry("Nigeria");
         addressRepo.save(myAddress);
 
-        user.setUsername("Francis");
+        user.setUsername("francis@gmail.com");
         user.setPassword("dewew2ef3");
-        user.setEmail("francis@gmail.com");
+        user.setProfileName("Francis");
         user.setGender(Gender.MALE);
 
 
@@ -107,8 +107,8 @@ class UserTest {
 
     @Test
     void createFriendship(){
-        Optional<ApplicationUser> friendRequestSender = userRepository.findByUsername("Patience");
-        Optional<ApplicationUser> friendRequestReceiver = userRepository.findByUsername("Francis");
+        Optional<ApplicationUser> friendRequestSender = userRepository.findByUsername("francis@gmail.com");
+        Optional<ApplicationUser> friendRequestReceiver = userRepository.findByUsername("chris@chaton.com");
 
         Friend myFriend = new Friend();
         myFriend.setFriendRequestSender(friendRequestSender.orElseThrow());

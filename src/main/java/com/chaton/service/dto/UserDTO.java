@@ -8,15 +8,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class UserDto {
+public class UserDTO {
 
-    private  String username;
+    private  String email;
     private String password;
     private String firstName;
     private  String lastName;
-    private String email;
+    private String profileName;
     private String role;
     private Gender gender;
     private  String phoneNumber;

@@ -2,6 +2,7 @@ package com.chaton.web.config;
 
 import com.chaton.model.user.Gender;
 import com.chaton.web.config.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +22,7 @@ import java.util.Set;
 @Table(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor
-public class ApplicationUser  implements UserDetails {
+public class ApplicationUser  {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -29,9 +30,10 @@ public class ApplicationUser  implements UserDetails {
     @Column(nullable = false, length = 50, unique = true)
     private  String username;
 
-    @Column(nullable = false, length = 200, unique = true)
-    private   String email;
 
+    private   String profileName;
+
+    @JsonIgnore
     @Column(nullable = false, length = 400)
     private  String password;
 
@@ -73,27 +75,9 @@ public class ApplicationUser  implements UserDetails {
     @Column(name = "verification_code", length = 64)
     private String verificationCode;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
+    @Column(name = "resetPassword_token", length = 64)
+    private String resetPasswordToken;
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return false;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
-    }
-
-    @Override
     public boolean isEnabled() {
         return this.isEnabled;
     }
